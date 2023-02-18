@@ -1,12 +1,14 @@
 import { NestFactory } from "@nestjs/core";
-import { BooksModule } from "./books/books.module";
 import { ValidationPipe } from "@nestjs/common";
+import { AppModule } from "./books/app/app.module";
 
 async function bootstrap(){
     const port = process.env.PORT || 3000;
-    const app = await NestFactory.create(BooksModule);
+    const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(
-        new ValidationPipe()
+        new ValidationPipe({
+            whitelist: true
+        })
     )
     await app.listen(port);
 }

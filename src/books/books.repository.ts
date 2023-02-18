@@ -1,4 +1,6 @@
 import { Injectable } from "@nestjs/common"
+import { Book } from "./books.entity"
+
 
 @Injectable()
 export class BooksRepository {
