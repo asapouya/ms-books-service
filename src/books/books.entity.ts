@@ -13,7 +13,7 @@ export class Book {
     title: string
 
     @Column({nullable: false})
-    year_of_publiction: string
+    year_of_publication: number
 
     @Column({nullable: false})
     publisher: string
@@ -24,7 +24,7 @@ export class Book {
     @Column({nullable: false, length: 1024})
     summary: string
 
-    @Column({nullable: false})
+    @Column({nullable: true})
     book_pdf_dir: string
 }
 

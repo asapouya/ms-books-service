@@ -1,15 +1,15 @@
-import { Controller, Post, Body, Get, Put, Delete } from "@nestjs/common";
+import { Controller, Post, Body, Get, Put, Delete, Req, UseInterceptors, UploadedFile, Res } from "@nestjs/common";
 import { BooksService } from "./books.service";
 import PostBooksDTO from "./dtos/post_books.dto";
 
 @Controller("books")
 export class BooksController {
 
-    constructor(public booksService: BooksService) {}
+    constructor(private booksService: BooksService) {}
 
     @Post() //admin
     post_book(@Body() body: PostBooksDTO){
-        return this.booksService.create(body);
+        
     }
 
     @Get()

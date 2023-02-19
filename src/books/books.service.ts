@@ -1,17 +1,26 @@
-import { BooksRepository } from "./books.repository";
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Book } from "./books.entity";
+import { Repository } from "typeorm";
+import { FileUpload } from "./file-upload/file-upload";
+import { Request, Response } from "express";
 
 @Injectable()
 export class BooksService {
-    constructor(public booksRepository: BooksRepository) {}
+    constructor(
+        @InjectRepository(Book) private repo: Repository<Book>, 
+        private fileUpload: FileUpload
+        ) {}
 
-    findAll(...options: any) {
-        return this.booksRepository.findAll(...options);
+    create(bookObj: any) {
+        return this.repo.create(bookObj);
     }
-    findOne(...options: any) {
-        return this.booksRepository.findOne(...options);
+
+    save(bookObj: any) {
+        return this.repo.save(bookObj);
     }
-    create(obj: Object) {
-        return this.booksRepository.create(obj);
+
+    async upload_file(file: any, req: Request, res: Response){
+        await this.fileUpload.upload(req, res)
     }
 }

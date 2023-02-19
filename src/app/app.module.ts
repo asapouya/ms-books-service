@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { BooksModule } from "../books.module";
+import { BooksModule } from "../books/books.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Book } from "../books.entity";
+import { Book } from "../books/books.entity";
 
 @Module({
     imports: [TypeOrmModule.forRoot({

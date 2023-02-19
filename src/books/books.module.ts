@@ -1,13 +1,13 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
 import { BooksController } from "./books.controller";
-import { BooksRepository } from "./books.repository";
 import { BooksService } from "./books.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Book } from "./books.entity";
+import { FileUpload } from "./file-upload/file-upload";
 
 @Module({
     imports: [TypeOrmModule.forFeature([Book])],
     controllers: [BooksController],
-    providers: [BooksRepository, BooksService]
+    providers: [BooksService, FileUpload]
 })
 export class BooksModule {}
