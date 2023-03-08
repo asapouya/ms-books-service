@@ -18,8 +18,8 @@ export class Book {
     @Column({nullable: false})
     publisher: string
 
-    @Column({nullable: false})
-    genre: string
+    @Column({nullable: false, type: "simple-array"})
+    genre: string[]
 
     @Column({nullable: false, length: 1024})
     summary: string

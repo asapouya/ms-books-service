@@ -1,27 +1,32 @@
-import { IsArray, IsNumber, IsString, Length } from "class-validator";
+import { IsEmail, IsString, IsOptional, IsArray, Length, IsNumber } from "class-validator";
 
-class Post_books{
+export class UpdateBookDto {
     @IsString()
     @Length(1, 128)
+    @IsOptional()
     author: string
 
     @IsString()
     @Length(1, 128)
+    @IsOptional()
     title: string
 
     @IsNumber()
+    @IsOptional()
     year_of_publication: number
     
     @IsString()
     @Length(1, 128)
+    @IsOptional()
     publisher: string
 
     @IsArray()
+    @IsOptional()
     genre: string[]
 
     @IsString()
     @Length(1, 4096)
+    @IsOptional()
     summary: string
 }
 
-export default Post_books;
