@@ -1,7 +1,8 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { BooksModule } from "../books/books.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Book } from "../books/books.entity";
+import { IpFilterMiddleware } from "./middlewares/ipFilter.middleware";
 
 @Module({
     imports: [TypeOrmModule.forRoot({
@@ -13,6 +14,11 @@ import { Book } from "../books/books.entity";
         database: 'books',
         entities: [Book],
         synchronize: true
-    }), BooksModule]
+    }), BooksModule],
+    providers: [IpFilterMiddleware]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(IpFilterMiddleware).forRoutes("*");
+    }
+}
