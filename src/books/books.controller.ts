@@ -14,11 +14,31 @@ import { BooksService } from "./books.service";
 import CreateBookDTO from "./dtos/post_books.dto";
 import { BookDTO } from "./dtos/books.dto";
 import { UpdateBookDto } from "./dtos/update_books.dto";
+import { RabbitmqService } from "./queue.service";
+
 
 @Controller("books")
 export class BooksController {
 
-    constructor(private booksService: BooksService) {}
+    constructor(
+        private booksService: BooksService,
+        private queueService: RabbitmqService
+        ) {}
+
+
+
+    async onModuleInit() {
+        try {
+            const message = await this.queueService.consumeMessages(async (msg: any) => {
+                console.log(msg);
+                await this.queueService.ack(msg);
+            });
+            console.log("listening to messages...");
+        } catch (err) {
+            console.log(err);
+        }
+    } 
+
 
     @Serialize(BookDTO)
     @Post("admin") //admin
