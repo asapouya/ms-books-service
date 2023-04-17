@@ -5,7 +5,8 @@ import {
     Get, 
     Delete, 
     Param,
-    Patch,  
+    Patch,
+    Query,  
     //UseInterceptors, 
     // ClassSerializerInterceptor   
 } from "@nestjs/common";
@@ -25,11 +26,9 @@ export class BooksController {
         private queueService: RabbitmqService
         ) {}
 
-
-
     async onModuleInit() {
         try {
-            const message = await this.queueService.consumeMessages(async (msg: any) => {
+            await this.queueService.consumeMessages(async (msg: any) => {
                 console.log(msg);
                 await this.queueService.ack(msg);
             });
@@ -38,7 +37,6 @@ export class BooksController {
             console.log(err);
         }
     } 
-
 
     @Serialize(BookDTO)
     @Post("admin") //admin
@@ -54,7 +52,7 @@ export class BooksController {
     }
 
     @Serialize(BookDTO)
-    @Get('/:bookId')
+    @Get('getBook/:bookId')
     async get_book(@Param("bookId") id: string) {
         return await this.booksService.findOne(id);
     }
@@ -69,9 +67,11 @@ export class BooksController {
 
     }
 
-    @Get('/search')
-    search_books() {
-
+    @Serialize(BookDTO)
+    @Get('search')
+    async search_books(@Query() queryParams: any) {
+        const books = await this.booksService.searchBook(queryParams);
+        return books;
     }
 
     @Get('/file/:bookId') //if user has book in cache

@@ -12,6 +12,7 @@ export class IpFilterMiddleware implements NestMiddleware {
 
     use(req: Request, res: Response, next: NextFunction) {
         const requestIp = req.ip;
+        console.log(requestIp);
         if (this.allowedIps.includes(requestIp)) next();
         res.status(403).send("Access Denied.");
     }

@@ -19,6 +19,6 @@ import { IpFilterMiddleware } from "./middlewares/ipFilter.middleware";
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(IpFilterMiddleware).forRoutes("*");
+        //consumer.apply(IpFilterMiddleware).forRoutes("*");
     }
 }

@@ -22,4 +22,14 @@ export class BooksService {
     updateOne(_id: string, attrs: Partial<Book>) {
         return this.repo.update({_id: _id}, attrs);
     }
+    async searchBook(queryParams: any): Promise<Book[]> {
+        const queryBuilder = this.repo.createQueryBuilder("book");
+        for (const key in queryParams) {
+            if (queryParams.hasOwnProperty(key)) {
+                queryBuilder.andWhere(`book.${key} LIKE :${key}`, { [key]: `%${queryParams[key]}%`});
+            }
+        }
+        const books = await queryBuilder.getMany();
+        return books;
+    }
 }

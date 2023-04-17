@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs";
 import { plainToClass } from "class-transformer";
 
+//this mocks a class type
 interface ClassConstructor {
     new (...args: any[]): {}
 }
