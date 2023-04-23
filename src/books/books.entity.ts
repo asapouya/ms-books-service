@@ -9,7 +9,7 @@ export class Book {
     @Column({nullable: false})
     author: string
 
-    @Column({nullable: false})
+    @Column({nullable: false, unique: true})
     title: string
 
     @Column({nullable: false})

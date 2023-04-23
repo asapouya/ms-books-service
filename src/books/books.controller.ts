@@ -6,16 +6,20 @@ import {
     Delete, 
     Param,
     Patch,
-    Query,  
+    Query,
+    UseInterceptors,
+    UploadedFile,
+    BadRequestException,  
     //UseInterceptors, 
     // ClassSerializerInterceptor   
 } from "@nestjs/common";
 import { Serialize } from "./interceptors/serialize.interceptor";
 import { BooksService } from "./books.service";
-import CreateBookDTO from "./dtos/post_books.dto";
+import { validateBook } from "./dtos/post_books.dto";
 import { BookDTO } from "./dtos/books.dto";
 import { UpdateBookDto } from "./dtos/update_books.dto";
 import { RabbitmqService } from "./queue.service";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 
 @Controller("books")
@@ -39,27 +43,49 @@ export class BooksController {
     } 
 
     @Serialize(BookDTO)
-    @Post("admin") //admin
-    async post_book(@Body() body: CreateBookDTO){
-        const book = this.booksService.create(body);
-        return await this.booksService.save(book);
+    @UseInterceptors( FileInterceptor("file"))
+    @Post("admin")
+    async post_book(@Body() body: any, @UploadedFile() file: Express.Multer.File){
+        try {
+            await validateBook(body);
+            if(!file) {
+                throw new BadRequestException("File is required.");
+            }
+            let book = this.booksService.create(body);
+            book = await this.booksService.save(book);
+            return book;
+        } catch (err) {
+            throw new BadRequestException(err.message)
+        }
     }
 
     @Serialize(BookDTO)
     @Get()
     async get_books() {
-        return await this.booksService.findAll();
+        try {
+            return await this.booksService.findAll();
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        }
     }
 
     @Serialize(BookDTO)
     @Get('getBook/:bookId')
     async get_book(@Param("bookId") id: string) {
-        return await this.booksService.findOne(id);
+        try {
+            return await this.booksService.findOne(id);
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        }
     }
 
     @Patch('admin/:bookId') //admin
     async update_book(@Body() body: UpdateBookDto, @Param("bookId") id: string) {
-        return await this.booksService.updateOne(id, body);
+        try {
+            return await this.booksService.updateOne(id, body);
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        }
     }
 
     @Delete('admin/:bookId') //admin
@@ -70,8 +96,12 @@ export class BooksController {
     @Serialize(BookDTO)
     @Get('search')
     async search_books(@Query() queryParams: any) {
-        const books = await this.booksService.searchBook(queryParams);
-        return books;
+        try {
+            const books = await this.booksService.searchBook(queryParams);
+            return books;
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        }
     }
 
     @Get('/file/:bookId') //if user has book in cache

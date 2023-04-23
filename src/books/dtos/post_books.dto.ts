@@ -1,27 +1,26 @@
-import { IsArray, IsNumber, IsString, Length } from "class-validator";
+import * as joi from "joi";
 
-class Post_books{
-    @IsString()
-    @Length(1, 128)
-    author: string
-
-    @IsString()
-    @Length(1, 128)
-    title: string
-
-    @IsNumber()
-    year_of_publication: number
-    
-    @IsString()
-    @Length(1, 128)
-    publisher: string
-
-    @IsArray()
-    genre: string[]
-
-    @IsString()
-    @Length(1, 4096)
-    summary: string
+export async function validateBook (obj: any) {
+    const schema = joi.object({
+        author: joi.string()
+            .required()
+            .min(1)
+            .max(128),
+        title: joi.string()
+            .required()
+            .min(1)
+            .max(128),
+        year_of_publication: joi.number()
+            .required(),
+        publisher: joi.string()
+            .required()
+            .min(1)
+            .max(128),
+        genre: joi.array(),
+        summary: joi.string()
+            .required()
+            .min(1)
+            .max(4096)
+    })
+    return await schema.validateAsync(obj);
 }
-
-export default Post_books;

@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { map } from "rxjs";
-import { plainToClass } from "class-transformer";
+import { plainToInstance } from "class-transformer";
 
 //this mocks a class type
 interface ClassConstructor {
@@ -24,8 +24,8 @@ class SerializerInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
         return next.handle().pipe(
             map((data: any) => {
-                return plainToClass(this.dto, data, {
-                    excludeExtraneousValues: true, 
+                return plainToInstance(this.dto, data, {
+                    excludeExtraneousValues: true
                 });
             })
         )
