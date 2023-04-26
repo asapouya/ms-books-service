@@ -9,17 +9,17 @@ import {
     Query,
     UseInterceptors,
     UploadedFile,
-    BadRequestException,  
+    BadRequestException,
+    Req,
+    Res,  
     //UseInterceptors, 
     // ClassSerializerInterceptor   
 } from "@nestjs/common";
 import { Serialize } from "./interceptors/serialize.interceptor";
 import { BooksService } from "./books.service";
-import { validateBook } from "./dtos/post_books.dto";
 import { BookDTO } from "./dtos/books.dto";
 import { UpdateBookDto } from "./dtos/update_books.dto";
 import { RabbitmqService } from "./queue.service";
-import { FileInterceptor } from "@nestjs/platform-express";
 
 
 @Controller("books")
@@ -43,20 +43,9 @@ export class BooksController {
     } 
 
     @Serialize(BookDTO)
-    @UseInterceptors( FileInterceptor("file"))
     @Post("admin")
-    async post_book(@Body() body: any, @UploadedFile() file: Express.Multer.File){
-        try {
-            await validateBook(body);
-            if(!file) {
-                throw new BadRequestException("File is required.");
-            }
-            let book = this.booksService.create(body);
-            book = await this.booksService.save(book);
-            return book;
-        } catch (err) {
-            throw new BadRequestException(err.message)
-        }
+    async post_book(@Body() body: any, @Req() req: any){
+        return await this.booksService.post_books(body, req)
     }
 
     @Serialize(BookDTO)
