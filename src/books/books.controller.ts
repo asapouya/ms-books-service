@@ -7,13 +7,8 @@ import {
     Param,
     Patch,
     Query,
-    UseInterceptors,
-    UploadedFile,
     BadRequestException,
-    Req,
-    Res,  
-    //UseInterceptors, 
-    // ClassSerializerInterceptor   
+    Req
 } from "@nestjs/common";
 import { Serialize } from "./interceptors/serialize.interceptor";
 import { BooksService } from "./books.service";
