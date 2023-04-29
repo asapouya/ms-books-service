@@ -13,32 +13,41 @@ export class BooksService {
         private filesRepo: FileManagementRepo,
     ) {}
 
-    create(bookObj: any) {
-        return this.repo.create(bookObj);
+    async get_book(id: any) {
+        try {
+            return await this.repo.findOneBy({_id: id})
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        } 
     }
-    save(bookObj: any) {
-        return this.repo.save(bookObj);
-    }
-    findOne(id: any) {
-        return this.repo.findOneBy({_id: id})
-    }
-    findAll() {
-        return this.repo.find();
-    }
-    updateOne(_id: string, attrs: Partial<Book>) {
-        return this.repo.update({_id: _id}, attrs);
-    }
-    async searchBook(queryParams: any): Promise<Book[]> {
-        const queryBuilder = this.repo.createQueryBuilder("book");
-        for (const key in queryParams) {
-            if (queryParams.hasOwnProperty(key)) {
-                queryBuilder.andWhere(`book.${key} LIKE :${key}`, { [key]: `%${queryParams[key]}%`});
-            }
+    async get_books() {
+        try {
+            return await this.repo.find();
+        } catch (err) {
+            throw new BadRequestException(err.message);
         }
-        const books = await queryBuilder.getMany();
-        return books;
     }
-
+    async update_book(_id: string, attrs: Partial<Book>) {
+        try {
+            return await this.repo.update({_id: _id}, attrs)
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        }
+    }
+    async search_books(queryParams: any): Promise<Book[]> {
+        try {
+            const queryBuilder = this.repo.createQueryBuilder("book");
+            for (const key in queryParams) {
+                if (queryParams.hasOwnProperty(key)) {
+                    queryBuilder.andWhere(`book.${key} LIKE :${key}`, { [key]: `%${queryParams[key]}%`});
+                }
+            }
+            const books = await queryBuilder.getMany();
+            return books;
+        } catch (err) {
+            throw new BadRequestException(err.message);
+        }   
+    }
     async post_books(body: Book, req: any): Promise<any>{
         let pdf_dir = null;
         try {

@@ -39,37 +39,25 @@ export class BooksController {
 
     @Serialize(BookDTO)
     @Post("admin")
-    async post_book(@Body() body: any, @Req() req: any){
-        return await this.booksService.post_books(body, req)
+    post_book(@Body() body: any, @Req() req: any){
+        return this.booksService.post_books(body, req)
     }
 
     @Serialize(BookDTO)
     @Get()
-    async get_books() {
-        try {
-            return await this.booksService.findAll();
-        } catch (err) {
-            throw new BadRequestException(err.message);
-        }
+    get_books() {
+        return this.booksService.get_books();
     }
 
     @Serialize(BookDTO)
     @Get('getBook/:bookId')
-    async get_book(@Param("bookId") id: string) {
-        try {
-            return await this.booksService.findOne(id);
-        } catch (err) {
-            throw new BadRequestException(err.message);
-        }
+    get_book(@Param("bookId") id: string) {
+        return this.booksService.get_book(id);
     }
 
     @Patch('admin/:bookId') //admin
-    async update_book(@Body() body: UpdateBookDto, @Param("bookId") id: string) {
-        try {
-            return await this.booksService.updateOne(id, body);
-        } catch (err) {
-            throw new BadRequestException(err.message);
-        }
+    update_book(@Body() body: UpdateBookDto, @Param("bookId") id: string) {
+        return this.booksService.update_book(id, body);
     }
 
     @Delete('admin/:bookId') //admin
@@ -79,13 +67,8 @@ export class BooksController {
 
     @Serialize(BookDTO)
     @Get('search')
-    async search_books(@Query() queryParams: any) {
-        try {
-            const books = await this.booksService.searchBook(queryParams);
-            return books;
-        } catch (err) {
-            throw new BadRequestException(err.message);
-        }
+    search_books(@Query() queryParams: any) {
+        return this.booksService.search_books(queryParams);
     }
 
     @Get('/file/:bookId') //if user has book in cache
