@@ -20,12 +20,39 @@ export class BooksService {
     async handle_user_deletion() {
         try {
             await this.brokerRepo.createChannel();
-            await this.brokerRepo.listenToMessage("books.user.delete.queue", async (msg) => {
+            this.brokerRepo.errorEvent((err: any) => {
+                console.log(err);
+            })
+            await this.brokerRepo.listenToMessage("books.user.delete.queue", async (msg: any) => {
                 const content = JSON.parse(msg.content.toString());
                 const userIdToBeDeleted = content.data.userId;
                 try {
 
                     //delete user cache from redis
+                    
+                    this.brokerRepo.ack(msg);
+                } catch (err) {
+                    console.log(err);
+                    this.brokerRepo.noAck(msg);
+                }
+            });            
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async handle_order_submition() {
+        try {
+            await this.brokerRepo.createChannel();
+            this.brokerRepo.errorEvent((err: any) => {
+                console.log(err);
+            })
+            await this.brokerRepo.listenToMessage("books.finalize.order.queue", async (msg: any) => {
+                const content = JSON.parse(msg.content.toString());
+                const userIdToBeAddedToCache = content.data.userId;
+                try {
+
+                    //add user and purchased books to cache
                     
                     this.brokerRepo.ack(msg);
                 } catch (err) {

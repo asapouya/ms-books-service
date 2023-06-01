@@ -19,6 +19,18 @@ export class RabbitmqRepo {
         });
     }
 
+    returnEvent = (callBack: Function) => {
+        this.channel.on("return", (message: any) => {
+            callBack(message);
+        })
+    }
+
+    errorEvent = (callBack: Function) => {
+        this.channel.on("error", (err: any) => {
+            callBack(err);
+        })
+    }
+
     async ack(msg: any) {
         (await this.channel).ack(msg);
         console.log("message ackowleged.")

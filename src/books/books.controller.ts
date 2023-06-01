@@ -27,9 +27,12 @@ export class BooksController {
 
         (function handle_user_deletion () {
             that.booksService.handle_user_deletion();
-        })()
+        })();
 
-    } 
+        (function handle_order_submition () {
+            that.booksService.handle_order_submition();
+        })();
+    }
 
     @Serialize(BookDTO)
     @Post("admin")
