@@ -7,7 +7,6 @@ import {
     Param,
     Patch,
     Query,
-    BadRequestException,
     Req
 } from "@nestjs/common";
 import { Serialize } from "./interceptors/serialize.interceptor";
@@ -26,15 +25,12 @@ export class BooksController {
         ) {}
 
     async onModuleInit() {
-        try {
-            await this.queueService.consumeMessages(async (msg: any) => {
-                console.log(msg);
-                await this.queueService.ack(msg);
-            });
-            console.log("listening to messages...");
-        } catch (err) {
-            console.log(err);
-        }
+        let that = this;
+
+        (function handle_user_deletion () {
+            that.queueService.handle_user_deletion();
+        })()
+        
     } 
 
     @Serialize(BookDTO)

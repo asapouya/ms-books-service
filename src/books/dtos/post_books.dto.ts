@@ -16,7 +16,8 @@ export async function validateBook (obj: any) {
             .required()
             .min(1)
             .max(128),
-        genre: joi.array(),
+        genre: joi.string()
+            .required(),
         summary: joi.string()
             .required()
             .min(1)

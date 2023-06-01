@@ -1,18 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import {connect} from "amqplib";
+import { RabbitMQConnection } from "./queue.connection";
 
 @Injectable()
 export class RabbitmqRepo {
     
-    private connection = null
+    private connection = RabbitMQConnection.getConnection;
     private channel = null
 
-    async connect(connectionString: string) {
-        this.connection = await connect(connectionString);
-    }
-
     async createChannel() {
+        console.log(this.connection)
         this.channel = await this.connection.createChannel();
+        console.log("Channel Created.");
     }
 
     async listenToMessage(queueName: string, callBack: Function) {

@@ -5,12 +5,14 @@ import { Repository } from "typeorm";
 import { validateBook } from "./dtos/post_books.dto";
 import { FileManagementRepo } from "./fileManagement.repository";
 import { unlink } from "fs";
+import { RedisRepo } from "./redis.repository";
 
 @Injectable()
 export class BooksService {
     constructor(
         @InjectRepository(Book) private repo: Repository<Book>,
         private filesRepo: FileManagementRepo,
+        private redisRepo: RedisRepo
     ) {}
 
     async get_book(id: any) {
