@@ -3,8 +3,8 @@ import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app/app.module";
 import * as bodyParser from "body-parser"
 import * as fileUpload from "express-fileupload"
-
 import { RabbitMQConnection } from "./books/queue.connection";
+
 
 async function bootstrap(){
     const rabbitMQConnection = RabbitMQConnection.getInstance()

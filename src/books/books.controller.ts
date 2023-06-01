@@ -13,7 +13,6 @@ import { Serialize } from "./interceptors/serialize.interceptor";
 import { BooksService } from "./books.service";
 import { BookDTO } from "./dtos/books.dto";
 import { UpdateBookDto } from "./dtos/update_books.dto";
-import { RabbitmqService } from "./queue.service";
 
 
 @Controller("books")
@@ -21,16 +20,15 @@ export class BooksController {
 
     constructor(
         private booksService: BooksService,
-        private queueService: RabbitmqService
         ) {}
 
     async onModuleInit() {
         let that = this;
 
         (function handle_user_deletion () {
-            that.queueService.handle_user_deletion();
+            that.booksService.handle_user_deletion();
         })()
-        
+
     } 
 
     @Serialize(BookDTO)

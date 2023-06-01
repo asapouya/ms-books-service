@@ -4,7 +4,6 @@ import { BooksService } from "./books.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Book } from "./books.entity";
 import { RabbitmqRepo } from "./queue.repository";
-import { RabbitmqService } from "./queue.service";
 import { TestMiddleware } from "./middlewares/test.middleware";
 import { FileManagementRepo } from "./fileManagement.repository";
 import { RedisRepo } from "./redis.repository";
@@ -15,7 +14,7 @@ import { RedisRepo } from "./redis.repository";
 
     ],
     controllers: [BooksController],
-    providers: [BooksService, RabbitmqRepo, RabbitmqService, FileManagementRepo, RedisRepo]   
+    providers: [BooksService, RabbitmqRepo, FileManagementRepo, RedisRepo]   
 })
 export class BooksModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

@@ -6,14 +6,37 @@ import { validateBook } from "./dtos/post_books.dto";
 import { FileManagementRepo } from "./fileManagement.repository";
 import { unlink } from "fs";
 import { RedisRepo } from "./redis.repository";
+import { RabbitmqRepo } from "./queue.repository";
 
 @Injectable()
 export class BooksService {
     constructor(
         @InjectRepository(Book) private repo: Repository<Book>,
         private filesRepo: FileManagementRepo,
+        private brokerRepo: RabbitmqRepo,
         private redisRepo: RedisRepo
     ) {}
+
+    async handle_user_deletion() {
+        try {
+            await this.brokerRepo.createChannel();
+            await this.brokerRepo.listenToMessage("books.user.delete.queue", async (msg) => {
+                const content = JSON.parse(msg.content.toString());
+                const userIdToBeDeleted = content.data.userId;
+                try {
+
+                    //delete user cache from redis
+                    
+                    this.brokerRepo.ack(msg);
+                } catch (err) {
+                    console.log(err);
+                    this.brokerRepo.noAck(msg);
+                }
+            });            
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     async get_book(id: any) {
         try {
@@ -22,6 +45,7 @@ export class BooksService {
             throw new BadRequestException(err.message);
         } 
     }
+
     async get_books() {
         try {
             return await this.repo.find();
@@ -29,6 +53,7 @@ export class BooksService {
             throw new BadRequestException(err.message);
         }
     }
+
     async update_book(_id: string, attrs: Partial<Book>) {
         try {
             return await this.repo.update({_id: _id}, attrs)
@@ -36,6 +61,7 @@ export class BooksService {
             throw new BadRequestException(err.message);
         }
     }
+    
     async search_books(queryParams: any): Promise<Book[]> {
         try {
             const queryBuilder = this.repo.createQueryBuilder("book");
