@@ -8,7 +8,6 @@ export class RabbitmqRepo {
     private channel = null
 
     async createChannel() {
-        console.log(this.connection)
         this.channel = await this.connection.createChannel();
         console.log("Channel Created.");
     }

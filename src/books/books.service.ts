@@ -50,6 +50,7 @@ export class BooksService {
             await this.brokerRepo.listenToMessage("books.finalize.order.queue", async (msg: any) => {
                 const content = JSON.parse(msg.content.toString());
                 const userIdToBeAddedToCache = content.data.userId;
+                const booksToBeCached = content.data.books;
                 try {
 
                     //add user and purchased books to cache
