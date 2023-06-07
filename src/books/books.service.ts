@@ -27,9 +27,8 @@ export class BooksService {
                 const content = JSON.parse(msg.content.toString());
                 const userIdToBeDeleted = content.data.userId;
                 try {
-
+                    await this.redisRepo.delKey(userIdToBeDeleted);
                     //delete user cache from redis
-                    
                     this.brokerRepo.ack(msg);
                 } catch (err) {
                     console.log(err);
@@ -52,9 +51,9 @@ export class BooksService {
                 const userIdToBeAddedToCache = content.data.userId;
                 const booksToBeCached = content.data.books;
                 try {
-
+                    await this.redisRepo.addToSet(userIdToBeAddedToCache, booksToBeCached);
+                    await this.redisRepo.setExp(userIdToBeAddedToCache, 120);
                     //add user and purchased books to cache
-                    
                     this.brokerRepo.ack(msg);
                 } catch (err) {
                     console.log(err);
