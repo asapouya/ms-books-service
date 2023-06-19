@@ -26,6 +26,7 @@ export class BooksService {
             await this.brokerRepo.listenToMessage("books.user.delete.queue", async (msg: any) => {
                 const content = JSON.parse(msg.content.toString());
                 const userIdToBeDeleted = content.data.userId;
+                console.log(content);
                 try {
                     await this.redisRepo.delKey(userIdToBeDeleted);
                     //delete user cache from redis
