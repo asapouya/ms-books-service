@@ -12,7 +12,7 @@ import { NestFactory } from "@nestjs/core";
         host: 'localhost',
         port: 3306,
         username: 'root',
-        password: '130813812380',
+        password: '1234567890',
         database: 'books',
         entities: [Book],
         synchronize: true
